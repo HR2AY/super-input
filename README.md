@@ -1,5 +1,7 @@
 # Super Input
 
+![Super Input 操作演示](docs/demo.gif)
+
 把文件拖给飞书。一个原生 macOS 菜单栏工具，通过官方 [lark-cli](https://github.com/larksuite/cli) 以本人身份向你勾选的会话发送附件。
 
 **当前版本仅支持飞书。** 将文件拖到菜单栏图标下方，移到接收框上半区展开两列授权会话，松手到目标卡片直接发送。保留透明材质、圆形图标、光标点阵和弹簧动效。
@@ -78,6 +80,13 @@ bash scripts/build.sh
 欢迎修复飞书问题、改进教程、完善文件拖放体验。提交前阅读 [贡献指南](CONTRIBUTING.md)。当前发行范围为飞书；新软件接入应先通过 Issue 讨论接口与维护计划。
 
 请勿上传本机 `feishu.json`、账号和联系人标识、CLI 凭据、配对令牌或真实聊天截图。报告问题请填写 App、macOS 与 CLI 版本以及复现步骤，并隐藏个人信息。
+
+## 联系方式
+
+- 邮箱：[hzy20050204@gmail.com](mailto:hzy20050204@gmail.com)
+- 微信：扫描下方二维码添加好友。
+
+<img src="docs/wechat-contact.png" alt="HrzaY 的微信二维码" width="320" />
 
 ## License
 
