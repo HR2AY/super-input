@@ -1,0 +1,16 @@
+name: 飞书问题
+description: 报告连接、拖放或发送问题
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: App / macOS / lark-cli 版本
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤、预期行为与实际结果
+      description: 请隐藏账号、联系人、会话 ID 和所有认证信息。
+    validations:
+      required: true

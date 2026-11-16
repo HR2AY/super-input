@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "feishu",
+  "name": "飞书",
+  "bundleIdentifier": "com.bytedance.macos.feishu",
+  "symbol": "paperplane.fill",
+  "accent": "blue",
+  "enabled": true,
+  "feishuSend": {
+    "enabled": true,
+    "cliPath": "",
+    "accountOpenID": "",
+    "appID": "",
+    "destinations": []
+  }
+}
