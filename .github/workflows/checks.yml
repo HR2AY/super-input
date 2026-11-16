@@ -14,7 +14,20 @@ jobs:
       - name: Local checks (no credentials or live sends)
         run: bash scripts/check-local.sh
       - name: Universal macOS package
-        run: bash scripts/build.sh
+        run: |
+          if bash scripts/build.sh > build.log 2>&1; then
+            cat build.log
+          else
+            cat build.log
+            python3 -c 'from pathlib import Path; errors = [line for line in Path("build.log").read_text().splitlines() if "error:" in line]; [print("::error::" + line.replace("%", "%25").replace("\r", "%0D")) for line in errors[:8]]'
+            exit 1
+          fi
+      - name: Build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-diagnostics
+          path: build.log
       - uses: actions/upload-artifact@v4
         with:
           name: Super-Input-Feishu-macOS
