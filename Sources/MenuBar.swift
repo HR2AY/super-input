@@ -637,31 +637,47 @@ struct DropPreviewContent: View {
             }
         }.frame(width: 320, height: 156)
     }
-    var body: some View {
+    var showContacts: Bool { isFeishu && experience.feishuHover.listExpanded }
+    var receiverHeight: CGFloat {
+        showContacts ? FeishuGridGeometry.height(state.feishuDestinations.count, visibleRows: experience.visibleRows) : DropGeometry.bodySize.height
+    }
+    var collapsedOffset: CGFloat {
+        CGFloat(experience.selected - max(0, state.ruleStore.rules.count - 1) / 2) * 14
+    }
+    @ViewBuilder var contactList: some View {
+        if state.feishuDestinations.isEmpty {
+            VStack(spacing: 5) {
+                Text("还没有授权会话").font(.system(size: 12, weight: .medium))
+                Text("在设置 → 飞书中勾选可直接发送的会话").font(.system(size: 10)).foregroundStyle(.secondary)
+            }.frame(height: 76).frame(maxWidth: .infinity).padding(.top, 12)
+        } else {
+            FeishuContactGrid(destinations: state.feishuDestinations, experience: experience)
+                .padding(.top, 12).padding(.horizontal, 16).padding(.bottom, 16)
+        }
+    }
+    var receiverContents: some View {
+        VStack(spacing: 0) {
+            receiverHeader.opacity(experience.expanded ? 1 : 0)
+            if showContacts { contactList }
+        }
+    }
+    var receiverPanel: some View {
         let expanded = experience.expanded
-        let showContacts = isFeishu && experience.feishuHover.listExpanded
-        let height = showContacts ? FeishuGridGeometry.height(state.feishuDestinations.count, visibleRows: experience.visibleRows) : DropGeometry.bodySize.height
+        let shape = RoundedRectangle(cornerRadius: expanded ? 36 : 10, style: .continuous)
+        return receiverContents
+            .frame(width: expanded ? 320 : 24, height: expanded ? receiverHeight : 20, alignment: .top)
+            .background(.ultraThinMaterial).background(Color.black.opacity(0.16))
+            .overlay(shape.strokeBorder(.white.opacity(0.14), lineWidth: 0.65))
+            .clipShape(shape)
+            .shadow(color: .black.opacity(0.06), radius: 12, y: 5)
+            .offset(x: expanded ? 0 : collapsedOffset)
+            .animation(reduceMotion ? .linear(duration: 0.10) : .spring(response: 0.27, dampingFraction: 0.84), value: expanded)
+            .animation(reduceMotion ? .linear(duration: 0.10) : .spring(response: 0.27, dampingFraction: 0.86), value: showContacts)
+            .animation(.spring(response: 0.22, dampingFraction: 0.8), value: experience.feishuHover.iconVisible)
+    }
+    var body: some View {
         ZStack {
-            if experience.visible {
-                VStack(spacing: 0) {
-                    receiverHeader.opacity(expanded ? 1 : 0)
-                    if showContacts {
-                        if state.feishuDestinations.isEmpty {
-                            VStack(spacing: 5) { Text("还没有授权会话").font(.system(size: 12, weight: .medium)); Text("在设置 → 飞书中勾选可直接发送的会话").font(.system(size: 10)).foregroundStyle(.secondary) }
-                                .frame(height: 76).frame(maxWidth: .infinity).padding(.top, 12)
-                        } else { FeishuContactGrid(destinations: state.feishuDestinations, experience: experience).padding(.top, 12).padding(.horizontal, 16).padding(.bottom, 16) }
-                    }
-                }
-                .frame(width: expanded ? 320 : 24, height: expanded ? height : 20, alignment: .top)
-                .background(.ultraThinMaterial).background(Color.black.opacity(0.16))
-                .overlay(RoundedRectangle(cornerRadius: expanded ? 36 : 10, style: .continuous).strokeBorder(.white.opacity(0.14), lineWidth: 0.65))
-                .clipShape(RoundedRectangle(cornerRadius: expanded ? 36 : 10, style: .continuous))
-                .shadow(color: .black.opacity(0.06), radius: 12, y: 5)
-                .offset(x: expanded ? 0 : CGFloat(experience.selected - max(0, state.ruleStore.rules.count - 1) / 2) * 14)
-                .animation(reduceMotion ? .linear(duration: 0.10) : .spring(response: 0.27, dampingFraction: 0.84), value: expanded)
-                .animation(reduceMotion ? .linear(duration: 0.10) : .spring(response: 0.27, dampingFraction: 0.86), value: showContacts)
-                .animation(.spring(response: 0.22, dampingFraction: 0.8), value: experience.feishuHover.iconVisible)
-            }
+            if experience.visible { receiverPanel }
         }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Color.black.opacity(0.001)).environment(\.colorScheme, .dark)
     }
